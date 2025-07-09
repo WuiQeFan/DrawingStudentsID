@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽学号系统</title>
+    <link rel="stylesheet" href="DrawStudentID.css">
+    <link rel="stylesheet" href="Setting.css">
+    <script src="Setting.js"></script>
+    <script src="DrawStudentID.js"></script>
+</head>
+<body>
+    <!-- 模式选择 -->
+    <select id="mode" class="mode-selector">
+        <option value="default">默认模式</option>
+        <option value="flicker" selected>闪烁模式🔥</option>
+        <option value="settings">系统设置</option>
+    </select>
+
+    <!-- 默认抽号界面 -->
+    <div id="default" class="interface">
+        <h1>学号抽取系统</h1>
+        <div class="info-box">
+            <span>当前班级人数：</span>
+            <span id="currentTotal">52</span>
+        </div>
+        <button class="draw-btn" onclick="handleDefaultDraw()">立即抽取</button>
+        <div id="DefaultResult" class="result-box"></div>
+    </div>
+
+    <!-- 闪烁抽号界面 -->
+    <div id="flicker" class="interface">
+        <h1>闪烁抽取模式</h1>
+        <div class="info-box">
+            <span>当前班级人数：</span>
+            <span id="flickerTotal">52</span>
+        </div>
+        <button class="draw-btn" id="flickerBtn" onclick="handleFlickerDraw()">开始闪烁</button>
+        <div id="FlickerResult" class="result-box"></div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="mask" class="modal-mask"></div>
+    <div id="settingsModal" class="settings-modal">
+        <div class="modal-header">
+            <h2>⚙️ 系统设置</h2>
+            <span class="close-btn" onclick="closeSettings()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <label>班级人数设置：
+                <input type="number" id="totalStudents" min="1" value="52" class="num-input">
+            </label>
+            <br>
+            <label>闪烁速度设置：
+                <input type="number" id="fast" min="1" value="1000" class="num-input">
+            </label>
+            <div class="download-section">
+                <button class="download-btn" onclick="downloadSourceCode()">
+                    <span>📥 下载源代码</span>
+                    <div class="hint">包含HTML/CSS/JS文件</div>
+                    <div class="hint">小tips:https://github.com/WuiQeFan/WuiQeFan/也可下载</div>
+                </button>
+            </div>
+            <div class="btn-group">
+                <button class="confirm-btn" onclick="saveSettings()">✅ 保存设置</button>
+                <button class="cancel-btn" onclick="closeSettings()">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JSZip库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</body>
+</html>
