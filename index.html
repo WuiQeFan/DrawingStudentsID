@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>抽学号系统</title>
+    <link rel="ico" href="icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="DrawStudentID.css">
     <link rel="stylesheet" href="Setting.css">
     <script src="Setting.js"></script>
@@ -12,8 +13,8 @@
 <body>
     <!-- 模式选择 -->
     <select id="mode" class="mode-selector">
-        <option value="default">默认模式</option>
-        <option value="flicker" selected>闪烁模式🔥</option>
+        <option value="default" selected>默认模式</option>
+        <option value="flicker">闪烁模式🔥</option>
         <option value="settings">系统设置</option>
     </select>
 
@@ -48,7 +49,12 @@
         </div>
         <div class="modal-body">
             <label>班级人数设置：
-                <input type="number" id="totalStudents" min="1" value="52" class="num-input">
+                <br>
+                <label for="min">最小值:</label>
+                <input type="number" id="MinTotalStudents" min="1"  max="100000000"value="52" class="num-input" name="min">
+                <br>
+                <label for="max">最大值:</label>
+                <input type="number" id="MaxTotalStudents" min="1"  max="100000000"value="1" class="num-input"  name="max">
             </label>
             <br>
             <label>闪烁速度设置：
@@ -58,7 +64,7 @@
                 <button class="download-btn" onclick="downloadSourceCode()">
                     <span>📥 下载源代码</span>
                     <div class="hint">包含HTML/CSS/JS文件</div>
-                    <div class="hint">小tips:https://github.com/WuiQeFan/WuiQeFan/也可下载</div>
+                    <div class="hint">小tips:https://github.com/WuiQeFan/DrawingStudentsID也可下载</div>
                 </button>
             </div>
             <div class="btn-group">

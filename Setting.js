@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 全局状态管理
     window.appState = {
-        totalStudents: 52,
+        minStudent: 1,       // 默认最小值
+        maxStudent: 52,      // 默认最大值
         isFlickering: false,
         intervalId: null,
         fast: 50
@@ -28,11 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 下载源代码功能
     async function downloadSourceCode() {
-        // 从https://github.com/WuiQeFan/WuiQeFan/archive/refs/heads/master.zip下载源码
         try {
-            const response = await fetch('https://github.com/WuiQeFan/WuiQeFan/archive/refs/heads/master.zip');
+            const response = await fetch('https://github.com/WuiQeFan/DrawingStudentsID/archive/refs/heads/master.zip');
             if (!response.ok) {
-                throw new Error('Failed to download source code');
+                throw new Error('Failed to fetch');
+                
             }
             
             const blob = await response.blob();
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'WuiQeFan-source.zip';
+            link.download = 'DrawingStudentsID-source.zip';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -50,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Download failed:', error);
             alert('下载源码失败: ' + error.message);
+            alert('这里试一试:https://github.com/WuiQeFan/DrawingStudentsID/archive/refs/heads/master.zip');
         }
     }
 
@@ -57,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function openSettings() {
         maskLayer.style.display = 'block';
         settingsModal.style.display = 'block';
-        document.getElementById('totalStudents').value = window.appState.totalStudents;
+        document.getElementById('MinTotalStudents').value = window.appState.minStudent;
+        document.getElementById('MaxTotalStudents').value = window.appState.maxStudent;
         document.getElementById('fast').value = window.appState.fast;
     }
 
@@ -69,21 +72,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 保存设置
     function saveSettings() {
-        const newTotal = parseInt(document.getElementById('totalStudents').value);
+        const min = parseInt(document.getElementById('MinTotalStudents').value);
+        const max = parseInt(document.getElementById('MaxTotalStudents').value);
         const newFast = parseInt(document.getElementById('fast').value);
 
-        if (newTotal > 0 && newFast > 0 || newTotal <= 1000000000) {
-            window.appState.totalStudents = newTotal;
-            window.appState.fast = newFast;
-            updateStudentCounters();
-            closeSettings();
-        } else {
-            if (newTotal <= 0 || newTotal > 1000000000){
-                alert('请输入有效的班级人数！');
-            } else if (newFast <= 0 || newFast > 1000000000) {
-                alert('请输入有效的闪烁速度！');
-            }
+        // 验证输入范围
+        if (isNaN(min) || isNaN(max) || min < 1 || max < 1 || min >= max) {
+            alert('学号范围设置无效！最小值必须大于0，且最大值不能小于最小值。');
+            return;
         }
+        
+        if (min > 1000000000 || max > 1000000000) {
+            alert('学号范围过大！最大值不能超过1000000000。');
+            return;
+        }
+
+        if (isNaN(newFast) || newFast < 1 || newFast > 10000) {
+            alert('闪烁速度设置无效！请输入1-10000之间的整数。');
+            return;
+        }
+
+        // 更新全局状态
+        window.appState.minStudent = min;
+        window.appState.maxStudent = max;
+        window.appState.fast = newFast;
+
+        // 更新界面显示
+        window.updateStudentCounters();
+        
+        // 如果正在闪烁，重启闪烁
+        if (window.appState.isFlickering) {
+            clearInterval(window.appState.intervalId);
+            window.appState.intervalId = setInterval(() => {
+                const tempResult = Math.floor(
+                    Math.random() * (window.appState.maxStudent - window.appState.minStudent + 1)
+                ) + window.appState.minStudent;
+                document.getElementById('FlickerResult').innerHTML = `
+                    ✨ 闪烁中：<span class="blink">${tempResult}</span>
+                `;
+            }, window.appState.fast);
+        }
+
+        closeSettings();
     }
 
     // 全局暴露函数
